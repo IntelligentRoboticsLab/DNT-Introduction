@@ -1,3 +1,0 @@
-<project name="BallDetector">
-  <depends buildtime="true" runtime="true" names="libnaoqi" />
-</project>

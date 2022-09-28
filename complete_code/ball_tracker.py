@@ -3,15 +3,18 @@
 import cv2
 import itertools
 import numpy as np
-
+# import qi
+import argparse
+import sys
 from naoqi import ALProxy
+import naoqi
 
 from orange_ball import create_video_connection, get_img_from_robot, detect_orange_ball
 
 from kick import kick
 
 # Robot name as shown on its head followed by .local
-IP = "jerry.local"
+IP = "momo.local"
 PORT = 9559
 
 # TODO: add separate kick
@@ -34,9 +37,11 @@ def start_proxies():
     posture_proxy = ALProxy("ALRobotPosture", IP, PORT)
     memory_proxy  = ALProxy("ALMemory", IP, PORT)
 
-    motion_proxy.wakeUp()
-    posture_proxy.goToPosture("StandInit", 0.5)
-    motion_proxy.setAngles("HeadPitch", 0.3, 0.1)
+    # motion_proxy.wakeUp()
+    # # posture_proxy.goToPosture("StandInit", 0.5)
+    # posture_proxy.goToPosture("StandZero", 0.5)
+    # motion_proxy.rest()
+    # motion_proxy.setAngles("HeadPitch", 0.3, 0.1)
 
     return motion_proxy, posture_proxy, memory_proxy
 
@@ -111,6 +116,7 @@ def main():
     video_device, capture_device = create_video_connection(IP, PORT, 1)
     motion_proxy, posture_proxy, memory_proxy = start_proxies()
     times_no_ball = 0
+
     while (True):
         img = get_img_from_robot(video_device, capture_device)
 
@@ -165,4 +171,46 @@ def main():
 
 
 if __name__ == "__main__":
+    from naoqi import ALProxy
+    tts = ALProxy("ALTextToSpeech", "ferb.local", 9559)
+    # tts.say("Hello, world!")
+
+    life_service = ALProxy("ALAutonomousLife", "ferb.local", 9559)
+    life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
+    
+    # tts.setLanguage("Chinese")
+    # tts.setParameter("enableCompression",True)
+    # tts.say("\\vol=70\\Hey Jakob, I got the sdk to work for python. C++ is still not working tho. Having trouble with Open")
+    # tts.say("\\tn=spell\\ cv")
+    # print(tts.getAvailableLanguages())
+    exit()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--ip", type=str, default="127.0.0.1",
+    #                     help="Robot IP address. On robot or Local Naoqi: use '127.0.0.1'.")
+    # parser.add_argument("--port", type=int, default=9559,
+    #                     help="Naoqi port number")
+
+    # args = parser.parse_args()
+    # session = qi.Session()
+    # try:
+    #     session.connect("tcp://" + args.ip + ":" + str(args.port))
+    # except RuntimeError:
+    #     print ("Can't connect to Naoqi at ip \"" + args.ip + "\" on port " + str(args.port) +".\n"
+    #            "Please check your script arguments. Run with -h option for help.")
+    #     sys.exit(1)
+
+    # tts = session.service("ALTextToSpeech")
+    # tts.setLanguage("English")
+    # Say Emile in english
+    # tts.say("My name is Emile.")
+
+    # motion_proxy  = session.service("ALMotion")
+    # posture_proxy = session.service("ALRobotPosture") 
+    # posture_proxy = ALProxy("ALRobotPosture", IP, PORT)
+    # memory_proxy  = ALProxy("ALMemory", IP, PORT)
+
+    # motion_proxy.wakeUp()
+    # # posture_proxy.goToPosture("StandInit", 0.5)
+    # posture_proxy.goToPosture("StandZero", 0.5)
+    # motion_proxy.rest()
     main()
